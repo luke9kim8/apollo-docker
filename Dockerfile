@@ -7,13 +7,19 @@ RUN cp /etc/apt/sources.list /etc/apt/sources.list~
 RUN sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
 RUN apt-get update 
 RUN apt-get upgrade -y 
-RUN apt-get build-dep -y python2.7 hexedit 
-RUN apt-get install -y wget unzip tar vim
-COPY build-sqlite.sh /build-sqlite.sh
-COPY build-python-modules.sh /build-python-modules.sh
-COPY sqliteTest.py /sqliteTest.py
-COPY build-psql.sh /build-psql.sh
-RUN ls
+RUN apt-get build-dep -y python2.7 hexedit
+RUN apt-get update 
+RUN apt-get install -y wget git-all build-essential unzip tar vim git python-pip \
+    python-setuptools sudo apt-utils autoconf autoconf-archive \
+    libpqxx-dev libboost-regex-dev libsqlite3-dev --no-install-recommends --assume-yes 
+WORKDIR /code
+COPY . .
+RUN bash build-psql.sh
 RUN bash build-sqlite.sh 
 RUN bash build-python-modules.sh
-RUN bash build-psql.sh
+WORKDIR /code/apollo
+RUN ./install-deps.sh; ./compile-libs.sh
+WORKDIR /code/apollo/src/sqlfuzz
+ENTRYPOINT [ "./fuzz.py", "-c", "configuration/postgres.yaml" ]
+
+

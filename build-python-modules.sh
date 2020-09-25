@@ -33,4 +33,4 @@ cp -r sqlite3 sqlite4
 cd sqlite4
 sed -i -e "s:from _sqlite3:from _sqlite4:g" dbapi2.py
 
-python /sqliteTest.py
+python /code/sqliteTest.py
