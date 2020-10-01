@@ -19,7 +19,7 @@ RUN bash build-sqlite.sh
 RUN bash build-python-modules.sh
 WORKDIR /code/apollo
 RUN ./install-deps.sh; ./compile-libs.sh
-WORKDIR /code/apollo/src/sqlfuzz
-ENTRYPOINT [ "./fuzz.py", "-c", "configuration/postgres.yaml" ]
+# WORKDIR /code
+# ENTRYPOINT [ "bash", "docker-entrypoint.sh" ]
 
 
